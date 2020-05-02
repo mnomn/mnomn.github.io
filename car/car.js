@@ -33,8 +33,7 @@ function setup() {
   connectDisconnectButton = createButton()
   connectDisconnectButton.mousePressed(connectButtonPressed);
   connectDisconnectButton.position(15,345);
-  connectDisconnectButton.html(connectStr)
-  connectDisconnectButton.style('background-color', "#BBBBBB");
+  uiSetConnected(false);
 
   let x = w/2
   let y = h/14
@@ -126,8 +125,7 @@ function connectBle() {
       ctrlCharacteristic2 = characteristic
     }
   })
-  connectDisconnectButton.html(disconnectStr);
-  connectDisconnectButton.style('background-color', "#8888BB");
+  uiSetConnected(true)
 })
 .catch(
   error => { console.log(error); });
@@ -140,11 +138,22 @@ function disconnectBle() {
   log('Disconnecting from Bluetooth Device...');
   if (bluetoothDevice.gatt.connected) {
     bluetoothDevice.gatt.disconnect();
-    connectDisconnectButton.html(connectStr)
-    connectDisconnectButton.style('background-color', "#BBBBBB");
   } else {
     log('> Bluetooth Device is already disconnected');
   }
+  uiSetConnected(false)
+}
+
+function uiSetConnected(connected)
+{
+  if (connected) {
+    connectDisconnectButton.html(disconnectStr);
+    connectDisconnectButton.style('background-color', "#8888BB");
+  } else {
+    connectDisconnectButton.html(connectStr)
+    connectDisconnectButton.style('background-color', "#BBBBBB");
+  }
+
 }
 
 function normalizeSteer(v,range) {
