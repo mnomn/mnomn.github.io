@@ -134,7 +134,7 @@ function connectBle() {
 
 function onDisconnected(event) {
   // Callback when bluetooth disconnected
-  log('> Bluetooth Device disconnected');
+  console.log('> Bluetooth Device disconnected callback');
   uiSetConnected(false)
 }
 
@@ -142,7 +142,7 @@ function disconnectBle() {
   if (!bluetoothDevice) {
     return;
   }
-  log('Disconnecting from Bluetooth Device...');
+  console.log('Disconnecting from Bluetooth Device...');
   if (bluetoothDevice.gatt.connected) {
     bluetoothDevice.gatt.disconnect();
   } else {
