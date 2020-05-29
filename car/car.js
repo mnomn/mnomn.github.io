@@ -109,6 +109,7 @@ function connectBle() {
 .then(
   device => {
     bluetoothDevice = device;
+    bluetoothDevice.addEventListener('gattserverdisconnected', onDisconnected);
     return device.gatt.connect();
   }
 )
@@ -129,6 +130,12 @@ function connectBle() {
 })
 .catch(
   error => { console.log(error); });
+}
+
+function onDisconnected(event) {
+  // Callback when bluetooth disconnected
+  log('> Bluetooth Device disconnected');
+  uiSetConnected(false)
 }
 
 function disconnectBle() {
