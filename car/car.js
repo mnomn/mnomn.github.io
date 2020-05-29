@@ -146,7 +146,7 @@ function disconnectBle() {
   if (bluetoothDevice.gatt.connected) {
     bluetoothDevice.gatt.disconnect();
   } else {
-    log('> Bluetooth Device is already disconnected');
+    console.log('> Bluetooth Device is already disconnected');
   }
   uiSetConnected(false)
 }
