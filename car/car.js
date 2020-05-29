@@ -30,7 +30,7 @@ function setup() {
   serviceInput.position(15,315);
   serviceInput.size(235, 20)
 
-  connectDisconnectButton = createButton()
+  connectDisconnectButton = createButton(connectStr)
   connectDisconnectButton.mousePressed(connectButtonPressed);
   connectDisconnectButton.position(15,345);
   uiSetConnected(false);
