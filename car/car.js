@@ -23,55 +23,50 @@ const disconnectStr = "Disconnect"
 // TODO: Switch between touch and gyro.
 
 function setup() {
-  createCanvas(h, w);
-  background("#366");
+  let canvas = createCanvas(h, w);
+  background("#698a94");
+
+  let canvasPos = canvas.position()
+  console.dir(canvasPos)
 
   serviceInput = createInput(serviceUuid);
-  serviceInput.position(15,315);
+  serviceInput.position(canvasPos.x ,canvasPos.y + h + 15);
   serviceInput.size(235, 20)
 
   connectDisconnectButton = createButton(connectStr)
   connectDisconnectButton.mousePressed(connectButtonPressed);
-  connectDisconnectButton.position(15,345);
+  connectDisconnectButton.position(canvasPos.x ,canvasPos.y + h + 45);
   uiSetConnected(false);
 
   let x = w/2
-  let y = h/14
+  let y = 15
   fill(0);//Black 
   textAlign(CENTER);
-  textSize(14);
   text("Forward", x, y)
 
-  // Time to write some cool graphics
-  fill(204, 101, 192, 127);
-  // Point FW
-  x = w/2
-  y = h/10
-  let arrWith = 40;
-  let arrHeight = 20;
-  triangle(x, y, x + arrWith, y+arrHeight, x - arrWith, y+arrHeight)
-  textAlign(CENTER);
+  // fill(200, 48, 48, 255)
+
+  // Point fw
+  y = h/4
+  textSize(72);
+  text("\u2b06", x, y)
 
   // Point back
-  x = w/2
   y = h - h/10
-  arrWith = 40;
-  arrHeight = 20;
-  triangle(x, y, x + arrWith, y-arrHeight, x - arrWith, y-arrHeight)
+  textSize(72);
+  text("\u2b07", x, y)
 
   // Point left
-  x = w/10
-  y = h/2
-  arrWith = 40;
-  arrHeight = 20;
-  triangle(x, y, x + arrHeight, y-arrWith, x + arrHeight, y+arrWith)
+  x = w/8
+  y = h/2 + 20
+  textSize(72);
+  text("\u2b05", x, y)
 
   // Point right
-  x = w - w/10
-  y = h/2
-  arrWith = 40;
-  arrHeight = 20;
-  triangle(x, y, x - arrHeight, y-arrWith, x - arrHeight, y+arrWith)
+  x = w - w/8
+  y = h/2 + 20
+  textSize(72);
+  text("\u27a1", x, y)
 
   // Center
   ellipse(h/2, w/2, 20, 20)
