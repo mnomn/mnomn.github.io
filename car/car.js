@@ -49,24 +49,24 @@ function setup() {
   // Point fw
   y = h/4
   textSize(72);
-  text("\u2b06", x, y)
+  text("\u21a5", x, y)
 
   // Point back
   y = h - h/10
   textSize(72);
-  text("\u2b07", x, y)
+  text("\u21a7", x, y)
 
   // Point left
   x = w/8
   y = h/2 + 20
   textSize(72);
-  text("\u2b05", x, y)
+  text('\u21a4', x, y)
 
   // Point right
   x = w - w/8
   y = h/2 + 20
   textSize(72);
-  text("\u27a1", x, y)
+  text("\u21a6", x, y)
 
   // Center
   ellipse(h/2, w/2, 20, 20)
