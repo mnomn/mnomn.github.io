@@ -22,20 +22,23 @@ const disconnectStr = "Disconnect"
 // TODO: Is notify channel needed?
 // TODO: Switch between touch and gyro.
 
+let bottomLine = 0;
+
 function setup() {
   let canvas = createCanvas(h, w);
   background("#698a94");
 
   let canvasPos = canvas.position()
-  console.dir(canvasPos)
+
+  bottomLine = canvasPos.y + h + 30
 
   serviceInput = createInput(serviceUuid);
-  serviceInput.position(canvasPos.x ,canvasPos.y + h + 15);
+  serviceInput.position(canvasPos.x, bottomLine + 20);
   serviceInput.size(235, 20)
 
   connectDisconnectButton = createButton(connectStr)
   connectDisconnectButton.mousePressed(connectButtonPressed);
-  connectDisconnectButton.position(canvasPos.x ,canvasPos.y + h + 45);
+  connectDisconnectButton.position(canvasPos.x ,bottomLine + 45);
   uiSetConnected(false);
 
   let x = w/2
@@ -75,7 +78,7 @@ function setup() {
 
 function draw() {
   noStroke();
-  if (mouseIsPressed) {
+  if (mouseIsPressed && mouseY < bottomLine) {
     writeSteerSpeed(mouseX, mouseY)
   }
 }
