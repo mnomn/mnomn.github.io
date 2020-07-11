@@ -17,10 +17,9 @@ let connectDisconnectButton
 const connectStr = "Connect and drive"
 const disconnectStr = "Disconnect"
 
-// TODO: Show on screen if connected or not
-// TODO: Listen to disconnect
 // TODO: Is notify channel needed?
 // TODO: Switch between touch and gyro.
+// TODO: Select based on name "BLECar" instead of Uuid.
 
 let bottomLine = 0;
 
@@ -38,42 +37,39 @@ function setup() {
 
   connectDisconnectButton = createButton(connectStr)
   connectDisconnectButton.mousePressed(connectButtonPressed);
-  connectDisconnectButton.position(canvasPos.x ,bottomLine + 45);
+  connectDisconnectButton.position(canvasPos.x, bottomLine + 45);
   uiSetConnected(false);
 
-  let x = w/2
+  let x = w / 2
   let y = 15
   fill(0);//Black 
   textAlign(CENTER);
   text("Forward", x, y)
 
-  // fill(200, 48, 48, 255)
-
   // Point fw
-  y = h/4
+  y = h / 4
   textSize(72);
   text("\u21a5", x, y)
 
   // Point back
-  y = h - h/10
+  y = h - h / 10
   textSize(72);
   text("\u21a7", x, y)
 
   // Point left
-  x = w/8
-  y = h/2 + 20
+  x = w / 8
+  y = h / 2 + 20
   textSize(72);
   text('\u21a4', x, y)
 
   // Point right
-  x = w - w/8
-  y = h/2 + 20
+  x = w - w / 8
+  y = h / 2 + 20
   textSize(72);
   text("\u21a6", x, y)
 
   // Center
-  ellipse(h/2, w/2, 20, 20)
-
+  ellipse(h / 2, w / 2, 20, 20)
 }
 
 function draw() {
@@ -100,34 +96,34 @@ function connectBle() {
   let serviceName = serviceInput.value()
 
   navigator.bluetooth.requestDevice({
-  filters: [{
-    services: [serviceName]
-  }]
-})
-.then(
-  device => {
-    bluetoothDevice = device;
-    bluetoothDevice.addEventListener('gattserverdisconnected', onDisconnected);
-    return device.gatt.connect();
-  }
-)
-.then(
-  // TODO: If i filter on "name: "BLECare", how do I get serviceName here?
-  server => server.getPrimaryService(serviceName)
-)
-.then(service => service.getCharacteristics())
-.then(characteristics => {
-  characteristics.forEach(characteristic => {
-    console.log(characteristic.properties.write);
-    if (characteristic.properties.write) {
-      // Save char so we can write to it later
-      ctrlCharacteristic2 = characteristic
-    }
+    filters: [{
+      services: [serviceName]
+    }]
   })
-  uiSetConnected(true)
-})
-.catch(
-  error => { console.log(error); });
+    .then(
+      device => {
+        bluetoothDevice = device;
+        bluetoothDevice.addEventListener('gattserverdisconnected', onDisconnected);
+        return device.gatt.connect();
+      }
+    )
+    .then(
+      // TODO: If i filter on "name: "BLECare", how do I get serviceName here?
+      server => server.getPrimaryService(serviceName)
+    )
+    .then(service => service.getCharacteristics())
+    .then(characteristics => {
+      characteristics.forEach(characteristic => {
+        console.log(characteristic.properties.write);
+        if (characteristic.properties.write) {
+          // Save char so we can write to it later
+          ctrlCharacteristic2 = characteristic
+        }
+      })
+      uiSetConnected(true)
+    })
+    .catch(
+      error => { console.log(error); });
 }
 
 function onDisconnected(event) {
@@ -149,8 +145,7 @@ function disconnectBle() {
   uiSetConnected(false)
 }
 
-function uiSetConnected(connected)
-{
+function uiSetConnected(connected) {
   if (connected) {
     connectDisconnectButton.html(disconnectStr);
     connectDisconnectButton.style('background-color', "#8888BB");
@@ -158,29 +153,31 @@ function uiSetConnected(connected)
     connectDisconnectButton.html(connectStr)
     connectDisconnectButton.style('background-color', "#BBBBBB");
   }
-
 }
 
-function normalizeSteer(v,range) {
-  if (v<0) return 0
-  if (v>w) return range
+// Normalixe canvas width to range
+function normalizeSteer(v, range) {
+  if (v < 0) return 0
+  if (v > w) return range
+
   let r = 0
-  r += (range*v)/h
+  r += (range * v) / h
   return int(r);
 }
 
-// Translate canvas pos to 0-255 
-// Top of canvas is max speed (255)
-function normalizeSpeed(v,range) {
-  if (v<0) return range
-  if (v>h) return 0
+// Normalixe canvas height to range
+// Top of canvas is max speed (range)
+function normalizeSpeed(v, range) {
+  if (v < 0) return range
+  if (v > h) return 0
+
   let r = range
-  r -= (range*v)/h
+  // Negative to make top of screen high values (max speed)
+  r -= (range * v) / h
   return int(r)
 }
 
 function writeSteerSpeed(st, sp) {
-
   // Do not send if previous send is in progress
   if (sendInProgress) {
     console.log("sendInProgress");
@@ -188,22 +185,21 @@ function writeSteerSpeed(st, sp) {
   }
 
   spN = normalizeSpeed(sp, 127)
-  stN = normalizeSteer(st,127)
+  stN = normalizeSteer(st, 127)
   console.log(`Sending steer:${stN} speed:${spN}`);
 
   if (ctrlCharacteristic2) {
-    let arr = new Uint8Array([spN,stN])
+    let arr = new Uint8Array([spN, stN])
     sendInProgress = true;
     ctrlCharacteristic2.writeValue(arr)
-    .then(()=>{
-      console.log("Send2 done!")
-      sendInProgress = false;
-    }, ()=> {
-      console.log("Send2 ERR")
-      sendInProgress = false;
-    })
+      .then(() => {
+        console.log("Send2 done!")
+        sendInProgress = false;
+      }, () => {
+        console.log("Send2 ERR")
+        sendInProgress = false;
+      })
   } else {
     console.log("Not connected")
-
   }
 }
